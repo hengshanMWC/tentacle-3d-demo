@@ -1,6 +1,7 @@
+import { createIframe } from "./small"
 import { TentacleIframe } from "./tentacle"
 
-let mainTentacle
+let mainTentacle, smallTentacle
 
 export function cerateMainTentacle (iframe) {
   destructionMainTentacle()
@@ -15,5 +16,23 @@ export function destructionMainTentacle () {
   if (mainTentacle) {
     mainTentacle.destruction()
     mainTentacle = null
+  }
+}
+
+export function cerateSmallTentacle () {
+  destructionSmallTentacle()
+  const iframe = createIframe()
+  smallTentacle = new TentacleIframe(iframe)
+}
+
+export function getSmallTentacle () {
+  return smallTentacle
+}
+
+export function destructionSmallTentacle () {
+  if (smallTentacle) {
+    smallTentacle.destruction()
+    smallTentacle.iframe.remove()
+    smallTentacle = null
   }
 }

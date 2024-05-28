@@ -13,7 +13,6 @@ export const defaultTentacleData = {
     _InsideColor: defaultXYZ,
   }
 }
-window.defaultTentacleData = defaultTentacleData
 export const defaultMainColor1 = {
   x: 0.15,
   y: 0.15,

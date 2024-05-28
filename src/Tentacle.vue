@@ -1,30 +1,66 @@
 <script setup>
-import { onUnmounted, ref } from 'vue'
-import { cerateMainTentacle, getMainTentacle, destructionMainTentacle } from './tentacle'
+import { onUnmounted, ref, watch } from 'vue'
+import { useTimeout } from '@vueuse/core'
+import { cerateMainTentacle, getMainTentacle, destructionMainTentacle, cerateSmallTentacle, destructionSmallTentacle, getSmallTentacle } from './tentacle'
 import { unityToValueMaterial, valueToUnityRotation, valueToUnityScale} from './tentacle/data';
+import { getAbsolutePosition, getElementSize } from './tentacle/small.js'
 import { BatchTween } from './tentacle/motion';
 const tentacleRef = ref(null)
-const hasLoadCompleteRef = ref(false)
 const batchTween =  new BatchTween(function (currentData) {
-  const mainTentacle = getMainTentacle()
-  if (mainTentacle) {
-    mainTentacle.sendUnity('ChangeRotation', valueToUnityRotation(currentData.rotation))
-    mainTentacle.sendUnity('ChangeScale', valueToUnityScale(currentData.scale))
-    mainTentacle.sendUnity('ChangeModelMaterial', unityToValueMaterial(currentData.material))
-  }
+  const tentacle = getMainTentacle()
+  sendUnity(tentacle, currentData)
 })
 
+const batchTweenSmall =  new BatchTween(function (currentData) {
+  const tentacle = getSmallTentacle()
+  sendUnity(tentacle, currentData)
+})
+const { ready: hasLoadCompleteRef, start: timeStart } = useTimeout(3000, { controls: true })
 function handleLoadComplete (data) {
-  hasLoadCompleteRef.value = true
+  timeStart()
   console.log('handleLoadComplete', data)
 }
-function handleActive (currentData, nextData) {
+const stopLoadComplete = watch(hasLoadCompleteRef, (value) => {
+  if (value) {
+    stopLoadComplete()
+  }
+})
+function sendUnity(tentacle, data) {
+  if (tentacle) {
+    tentacle.sendUnity('ChangeRotation', valueToUnityRotation(data.rotation))
+    tentacle.sendUnity('ChangeScale', valueToUnityScale(data.scale))
+    tentacle.sendUnity('ChangeModelMaterial', unityToValueMaterial(data.material))
+  }
+}
+function handleActive (currentData, nextData, dom) {
   const mainTentacle = getMainTentacle()
   const result = mainTentacle && hasLoadCompleteRef.value
   if (result) {
     batchTween.start(currentData, nextData)
+    // batchTweenSmall.start(currentData, nextData)
+    const tentacle = getSmallTentacle()
+    tentacle.sendUnity('ChangeRotation', valueToUnityRotation(nextData.rotation))
+    tentacle.sendUnity('ChangeScale', valueToUnityScale(nextData.scale))
+    tentacle.sendUnity('ChangeModelMaterial', unityToValueMaterial(nextData.material))
+    setSmallIframePosition(dom)
   }
   return result
+}
+function setSmallIframePosition (dom) {
+  const iframe = getSmallTentacle().iframe
+  const {
+    top, 
+    left
+  } = getAbsolutePosition(dom)
+  const {
+    width, 
+    height
+  } = getElementSize(dom)
+  iframe.style.top = top + 'px'
+  iframe.style.left = left + 'px'
+  iframe.style.width = width + 'px'
+  iframe.style.height = height + 'px'
+  iframe.style.opacity = 1
 }
 function getEventLoadComplete () {
   const mainTentacle = getMainTentacle()
@@ -38,9 +74,11 @@ function handleIframeLoad () {
   cerateMainTentacle(tentacleRef.value)
   getMainTentacle().on(getEventLoadComplete(), handleLoadComplete)
 }
+cerateSmallTentacle()
 onUnmounted(() => {
   getMainTentacle()?.off?.(getEventLoadComplete(), handleLoadComplete)
   destructionMainTentacle()
+  destructionSmallTentacle()
   batchTween.destruction()
 })
 defineExpose({
