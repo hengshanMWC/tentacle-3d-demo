@@ -3,7 +3,7 @@ export function createIframe() {
   const iframe = document.createElement('iframe');
 
   // Set the src attribute
-  iframe.src = '/tentacle/index.html';
+  iframe.src = import.meta.env.VITE_IFRAME_PATH;
 
   // Set the style attributes
   iframe.style.width = '100%';

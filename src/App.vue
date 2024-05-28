@@ -30,7 +30,6 @@ function handleClick (index) {
     <div class="btns">
       <template v-for="(item, index) in tentacleObjectData" :key="index">
         <div class="btn" @click="handleClick(index)" ref="btnListRef">
-          <!-- <iframe src="/tentacle/index.html" style="width: 100%; height: 100%;position: absolute;border: none;filter: blur(2px);"></iframe> -->
           <div :class="{active: currentIndexRef === index}">
             <span>name {{ index }}</span>
           </div>

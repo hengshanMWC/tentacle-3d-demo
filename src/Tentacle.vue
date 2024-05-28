@@ -85,8 +85,9 @@ defineExpose({
   hasLoadCompleteRef,
   handleActive
 })
+const src = import.meta.env.VITE_IFRAME_PATH
 </script>
 
 <template>
-  <iframe ref="tentacleRef" @load="handleIframeLoad" src="/tentacle/index.html"></iframe>
+  <iframe ref="tentacleRef" @load="handleIframeLoad" :src="src"></iframe>
 </template>
