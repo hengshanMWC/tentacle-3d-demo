@@ -1,42 +1,26 @@
 <script setup>
-import { onUnmounted, ref } from 'vue'
-import { cerateMainTentacle, getMainTentacle, destructionMainTentacle } from './tentacle'
-import { tentacleObjectData, unityToValueMaterial, valueToUnityRotation, valueToUnityScale } from './tentacle/data';
+import { computed, ref } from 'vue'
+import { defaultTentacleData, tentacleObjectData} from './tentacle/data';
+import Tentacle from './Tentacle.vue'
 const tentacleRef = ref(null)
-const hasLoadCompleteRef = ref(false)
-const currentIndexRef = ref(3)
-window.tentacleRef = tentacleRef
-function handleClick (index) {
-  currentIndexRef.value = index
-  
-  const mainTentacle = getMainTentacle()
-  if (mainTentacle) {
-    const data = tentacleObjectData[index]
-    mainTentacle.sendUnity('ChangeRotation', valueToUnityRotation(data.rotation))
-    mainTentacle.sendUnity('ChangeScale', valueToUnityScale(data.scale))
-    mainTentacle.sendUnity('ChangeModelMaterial', unityToValueMaterial(data.material))
+const currentIndexRef = ref()
+const currentTentacle = computed(() => {
+  let result
+  if (!isNaN(currentIndexRef.value)) {
+    result = tentacleObjectData[currentIndexRef.value]
+  } else {
+    result = defaultTentacleData
   }
-}
-function handleLoadComplete (data) {
-  hasLoadCompleteRef.value = true
-  console.log('handleLoadComplete', data)
-}
-function getEventLoadComplete () {
-  const mainTentacle = getMainTentacle()
-  if (mainTentacle) {
-    return mainTentacle.getMessageType(mainTentacle.tentacleConstant.event.loadComplete)
-  }
-}
-function handleIframeLoad () {
-  getMainTentacle()?.off?.(getEventLoadComplete(), handleLoadComplete)
-  destructionMainTentacle()
-  cerateMainTentacle(tentacleRef.value)
-  getMainTentacle().on(getEventLoadComplete(), handleLoadComplete)
-}
-onUnmounted(() => {
-  getMainTentacle()?.off?.(getEventLoadComplete(), handleLoadComplete)
-  destructionMainTentacle()
+  return result
 })
+function handleClick (index) {
+  if (index === currentIndexRef.value) return
+  const currentData = currentTentacle.value
+  const nextData = tentacleObjectData[index]
+  if (tentacleRef.value.handleActive(currentData, nextData)) {
+    currentIndexRef.value = index
+  }
+}
 </script>
 
 <template>
@@ -50,7 +34,7 @@ onUnmounted(() => {
         </div>
       </template>
     </div>
-    <iframe ref="tentacleRef" @load="handleIframeLoad" src="/tentacle/index.html" class="tentacle-main"></iframe>
+    <Tentacle ref="tentacleRef" class="tentacle-main"></Tentacle>
   </div>
 </template>
 
@@ -59,10 +43,11 @@ onUnmounted(() => {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 2;
 }
 .btn {
-  width: 80px;
-  height: 30px;
+  width: 100px;
+  height: 100px;
   position: relative;
   margin-bottom: 10px;
   cursor: pointer;

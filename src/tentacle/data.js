@@ -1,7 +1,19 @@
+export const defaultXYZ = {x:0,y:0,z:0}
 export const defaultTentacleData = {
-  
+  rotation: defaultXYZ,
+  scale: 1,
+  material: {
+    _MainColor1: defaultXYZ,
+    _MainColor2: defaultXYZ,
+    _MatcapColor1: defaultXYZ,
+    _MatcapColor2: defaultXYZ,
+    _MatcapColor3: defaultXYZ,
+    _FalmeColor: defaultXYZ,
+    _RimColor: defaultXYZ,
+    _InsideColor: defaultXYZ,
+  }
 }
-
+window.defaultTentacleData = defaultTentacleData
 export const defaultMainColor1 = {
   x: 0.15,
   y: 0.15,

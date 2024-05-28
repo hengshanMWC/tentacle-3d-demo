@@ -11,6 +11,7 @@
   "dependencies": {
     "eventemitter3": "^5.0.1",
     "gasp": "^0.0.2",
+    "gsap": "^3.12.5",
     "vue": "^3.4.21"
   },
   "devDependencies": {

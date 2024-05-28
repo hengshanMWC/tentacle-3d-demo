@@ -11,7 +11,6 @@ export class TentacleIframe extends EventEmitter {
     return this.iframe.contentWindow
   }
   get tentacleConstant () {
-    console.log('tentacleConstant', this.content)
     return this.content.tentacle
   }
   get unity () {
@@ -21,7 +20,7 @@ export class TentacleIframe extends EventEmitter {
     return this.tentacleConstant.prefix + type
   }
   sendUnity (methodName, value) {
-    console.log('methodName, value', methodName, value)
+    // console.log('methodName, value', methodName, value)
     this.unity.SendMessage('ModelControl', methodName, value)
   }
   send (type, data, targetOrigin = '*') {

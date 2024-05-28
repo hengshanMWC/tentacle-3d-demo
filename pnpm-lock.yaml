@@ -11,6 +11,9 @@ dependencies:
   gasp:
     specifier: ^0.0.2
     version: 0.0.2
+  gsap:
+    specifier: ^3.12.5
+    version: 3.12.5
   vue:
     specifier: ^3.4.21
     version: 3.4.27
@@ -522,6 +525,10 @@ packages:
     resolution: {integrity: sha512-cJGS8HkASZXLtYnS7CHDUCutYdeV2OXW/P+SU03+allNY26GiYOfstziPjnsMW8bbdf6hoQ3caVHYNZ0YLuFCA==}
     dependencies:
       q: 1.5.1
+    dev: false
+
+  /gsap@3.12.5:
+    resolution: {integrity: sha512-srBfnk4n+Oe/ZnMIOXt3gT605BX9x5+rh/prT2F1SsNJsU1XuMiP0E2aptW481OnonOGACZWBqseH5Z7csHxhQ==}
     dev: false
 
   /magic-string@0.30.10:
