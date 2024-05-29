@@ -3,7 +3,7 @@ import { onUnmounted, ref, watch } from 'vue'
 import { useTimeout } from '@vueuse/core'
 import { cerateMainTentacle, getMainTentacle, destructionMainTentacle, cerateSmallTentacle, destructionSmallTentacle, getSmallTentacle } from './tentacle'
 import { unityToValueMaterial, valueToUnityRotation, valueToUnityScale} from './tentacle/data';
-import { getAbsolutePosition, getElementSize } from './tentacle/small.js'
+import { getAbsolutePosition, getElementSize, setDomShow } from './tentacle/small.js'
 import { BatchTween } from './tentacle/motion';
 const tentacleRef = ref(null)
 const batchTween =  new BatchTween(function (currentData) {
@@ -11,11 +11,11 @@ const batchTween =  new BatchTween(function (currentData) {
   sendUnity(tentacle, currentData)
 })
 
-const batchTweenSmall =  new BatchTween(function (currentData) {
-  const tentacle = getSmallTentacle()
-  sendUnity(tentacle, currentData)
-})
-const { ready: hasLoadCompleteRef, start: timeStart } = useTimeout(3000, { controls: true })
+// const batchTweenSmall =  new BatchTween(function (currentData) {
+//   const tentacle = getSmallTentacle()
+//   sendUnity(tentacle, currentData)
+// })
+const { ready: hasLoadCompleteRef, start: timeStart } = useTimeout(4000, { controls: true })
 function handleLoadComplete (data) {
   timeStart()
   console.log('handleLoadComplete', data)
@@ -34,7 +34,8 @@ function sendUnity(tentacle, data) {
 }
 function handleActive (currentData, nextData, dom) {
   const mainTentacle = getMainTentacle()
-  const result = mainTentacle && hasLoadCompleteRef.value
+  const smallTentacle = getSmallTentacle()
+  const result = mainTentacle && smallTentacle && hasLoadCompleteRef.value
   if (result) {
     batchTween.start(currentData, nextData)
     // batchTweenSmall.start(currentData, nextData)
@@ -48,19 +49,7 @@ function handleActive (currentData, nextData, dom) {
 }
 function setSmallIframePosition (dom) {
   const iframe = getSmallTentacle().iframe
-  const {
-    top, 
-    left
-  } = getAbsolutePosition(dom)
-  const {
-    width, 
-    height
-  } = getElementSize(dom)
-  iframe.style.top = top + 'px'
-  iframe.style.left = left + 'px'
-  iframe.style.width = width + 'px'
-  iframe.style.height = height + 'px'
-  iframe.style.opacity = 1
+  setDomShow(iframe.parentElement, dom)
 }
 function getEventLoadComplete () {
   const mainTentacle = getMainTentacle()

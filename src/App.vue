@@ -1,36 +1,20 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { defaultTentacleData, tentacleObjectData} from './tentacle/data';
+import { ref } from 'vue'
+import { useReceivingInteractions } from './tentacle/useReceivingInteractions';
+import { tentacleObjectData} from './tentacle/data';
 import Tentacle from './Tentacle.vue'
 const tentacleRef = ref(null)
 const btnListRef = ref([])
-const currentIndexRef = ref()
-const currentTentacle = computed(() => {
-  let result
-  if (!isNaN(currentIndexRef.value)) {
-    result = tentacleObjectData[currentIndexRef.value]
-  } else {
-    result = defaultTentacleData
-  }
-  return result
-})
-function handleClick (index) {
-  if (index === currentIndexRef.value) return
-  const currentData = currentTentacle.value
-  const nextData = tentacleObjectData[index]
-  const dom = btnListRef.value[index]
-  if (tentacleRef.value.handleActive(currentData, nextData, dom)) {
-    currentIndexRef.value = index
-  }
-}
+const { handleActive, currentIndexRef } = useReceivingInteractions(tentacleRef, btnListRef)
 </script>
 
 <template>
   <div class="tentacle">
     <div class="btns">
       <template v-for="(item, index) in tentacleObjectData" :key="index">
-        <div class="btn" @click="handleClick(index)" ref="btnListRef">
-          <div :class="{active: currentIndexRef === index}">
+        <div 
+          class="btn" @mouseenter="handleActive(index)" ref="btnListRef">
+          <div :class="{active: index === currentIndexRef}">
             <span>name {{ index }}</span>
           </div>
         </div>
@@ -64,6 +48,7 @@ function handleClick (index) {
   justify-content: center;
   align-items: center;
 }
+.btn:hover > div,
 .btn > div.active {
   background-color: rgba(255, 255, 255, 0.4);
   color: #333;

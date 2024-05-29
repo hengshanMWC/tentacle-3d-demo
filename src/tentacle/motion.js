@@ -34,7 +34,7 @@ export class BatchTween {
     this.destruction()
     this.currentData = newJson(currentData)
     this.nextData = newJson(nextData)
-    this.batch = animateNestedProperties(this.currentData, this.nextData, 0.2)
+    this.batch = animateNestedProperties(this.currentData, this.nextData, 0.3)
     window.batch = this.batch
     this.update()
   }

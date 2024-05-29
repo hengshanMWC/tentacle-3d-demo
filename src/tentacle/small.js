@@ -1,19 +1,44 @@
 export function createIframe() {
   // Create the iframe element
   const iframe = document.createElement('iframe');
+  const parentElement = document.createElement('div');
 
   // Set the src attribute
   iframe.src = import.meta.env.VITE_IFRAME_PATH;
 
   // Set the style attributes
-  iframe.style.width = '100%';
-  iframe.style.height = '100%';
+  iframe.style.width = '200%';
+  iframe.style.height = '200%';
   iframe.style.position = 'absolute';
+  iframe.style.left = 0
+  iframe.style.top = 0
   iframe.style.border = 'none';
-  iframe.style.filter = 'blur(2px)';
-  iframe.style.opacity = 0
-  document.body.appendChild(iframe)
+
+  parentElement.style.filter = 'blur(2px)';
+  parentElement.style.position = 'absolute';
+  parentElement.style.overflow = 'hidden'
+  parentElement.style.opacity = 0
+
+  parentElement.appendChild(iframe)
+  document.body.appendChild(parentElement)
+
   return iframe
+}
+
+export function setDomShow (dom, targetDom) {
+  const {
+    top, 
+    left
+  } = getAbsolutePosition(targetDom)
+  const {
+    width, 
+    height
+  } = getElementSize(targetDom)
+  dom.style.top = top + 'px'
+  dom.style.left = left + 'px'
+  dom.style.width = width + 'px'
+  dom.style.height = height + 'px'
+  dom.style.opacity = 1
 }
 
 export function getAbsolutePosition(element) {
