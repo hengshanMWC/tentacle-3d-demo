@@ -21,7 +21,9 @@ export class TentacleIframe extends EventEmitter {
   }
   sendUnity (methodName, value) {
     // console.log('methodName, value', methodName, value)
-    this.unity.SendMessage('ModelControl', methodName, value)
+    if (this.unity) {
+      this.unity.SendMessage('ModelControl', methodName, value)
+    }
   }
   send (type, data, targetOrigin = '*') {
     const message = {

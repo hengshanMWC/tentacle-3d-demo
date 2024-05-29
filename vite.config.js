@@ -8,4 +8,10 @@ export default defineConfig({
     outDir: 'tentacle'
   },
   plugins: [vue()],
+  server: {
+    port: 5173,
+    proxy: {
+      '/static': 'https://bogx-dev.bladeofgod.net'
+    }
+  }
 })

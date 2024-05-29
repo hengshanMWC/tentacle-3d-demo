@@ -4,7 +4,7 @@ export function createIframe() {
   const parentElement = document.createElement('div');
 
   // Set the src attribute
-  iframe.src = import.meta.env.VITE_IFRAME_PATH;
+  iframe.src = import.meta.env.VITE_TENTACLE_PATH;
 
   // Set the style attributes
   iframe.style.width = '200%';

@@ -1,9 +1,9 @@
 <script setup>
-import { onUnmounted, ref, watch } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 import { useTimeout } from '@vueuse/core'
 import { cerateMainTentacle, getMainTentacle, destructionMainTentacle, cerateSmallTentacle, destructionSmallTentacle, getSmallTentacle } from './tentacle'
 import { unityToValueMaterial, valueToUnityRotation, valueToUnityScale} from './tentacle/data';
-import { getAbsolutePosition, getElementSize, setDomShow } from './tentacle/small.js'
+import { setDomShow } from './tentacle/small.js'
 import { BatchTween } from './tentacle/motion';
 const tentacleRef = ref(null)
 const batchTween =  new BatchTween(function (currentData) {
@@ -20,11 +20,12 @@ function handleLoadComplete (data) {
   timeStart()
   console.log('handleLoadComplete', data)
 }
-const stopLoadComplete = watch(hasLoadCompleteRef, (value) => {
-  if (value) {
-    stopLoadComplete()
-  }
-})
+// const stopLoadComplete = watch(hasLoadCompleteRef, (value) => {
+//   if (value) {
+//     stopLoadComplete()
+//     console.log('stopLoadComplete', value)
+//   }
+// })
 function sendUnity(tentacle, data) {
   if (tentacle) {
     tentacle.sendUnity('ChangeRotation', valueToUnityRotation(data.rotation))
@@ -58,13 +59,13 @@ function getEventLoadComplete () {
   }
 }
 function handleIframeLoad () {
-  getMainTentacle()?.off?.(getEventLoadComplete(), handleLoadComplete)
   destructionMainTentacle()
+  getMainTentacle()?.off?.(getEventLoadComplete(), handleLoadComplete)
   cerateMainTentacle(tentacleRef.value)
   getMainTentacle().on(getEventLoadComplete(), handleLoadComplete)
 }
 cerateSmallTentacle()
-onUnmounted(() => {
+onBeforeUnmount(() => {
   getMainTentacle()?.off?.(getEventLoadComplete(), handleLoadComplete)
   destructionMainTentacle()
   destructionSmallTentacle()
@@ -74,7 +75,7 @@ defineExpose({
   hasLoadCompleteRef,
   handleActive
 })
-const src = import.meta.env.VITE_IFRAME_PATH
+const src = import.meta.env.VITE_TENTACLE_PATH
 </script>
 
 <template>
