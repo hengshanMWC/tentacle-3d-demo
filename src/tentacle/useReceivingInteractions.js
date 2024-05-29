@@ -20,10 +20,11 @@ export function useReceivingInteractions (tentacleRef, btnListRef) {
     }
   }
   function tentacleWatchIndex (index) {
-    console.log('tentacleWatchIndex')
+    // console.log('tentacleWatchIndex', index)
     if (isNaN(index)) return
     stopTentacleWatchIndex()
     indexStopRef.value = watchEffect(() => {
+      // console.log('tentacleRef.value.hasLoadCompleteRef', tentacleRef.value.hasLoadCompleteRef)
       if (tentacleRef.value.hasLoadCompleteRef) {
         stopTentacleWatchIndex()
         handleActive(index)
@@ -31,14 +32,18 @@ export function useReceivingInteractions (tentacleRef, btnListRef) {
     })
   }
   function handleActive (index) {
-    if (index === currentIndexRef.value) return
+    // console.log('handleActive', index)
+    if (index === currentTentacle.value) return
     const currentData = currentTentacle.value
     const nextData = tentacleObjectData[index]
     const dom = btnListRef.value[index]
-    interactiveIndexRef.value = index
     if (!tentacleRef.value.handleActive(currentData, nextData, dom)) {
-      tentacleWatchIndex(index)
+      if (index !== interactiveIndexRef.value) {
+        tentacleWatchIndex(index)
+      }
+      interactiveIndexRef.value = index
     } else {
+      interactiveIndexRef.value = index
       currentIndexRef.value = index
     }
   }

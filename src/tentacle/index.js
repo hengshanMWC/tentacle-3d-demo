@@ -23,6 +23,7 @@ export function cerateSmallTentacle () {
   destructionSmallTentacle()
   const iframe = createIframe()
   smallTentacle = new TentacleIframe(iframe)
+
 }
 
 export function getSmallTentacle () {

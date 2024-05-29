@@ -1,11 +1,12 @@
 <script setup>
 import { onBeforeUnmount, ref } from 'vue'
-import { useTimeout } from '@vueuse/core'
+import { useTimeoutFn } from '@vueuse/core'
 import { cerateMainTentacle, getMainTentacle, destructionMainTentacle, cerateSmallTentacle, destructionSmallTentacle, getSmallTentacle } from './tentacle'
 import { unityToValueMaterial, valueToUnityRotation, valueToUnityScale} from './tentacle/data';
 import { setDomShow } from './tentacle/small.js'
 import { BatchTween } from './tentacle/motion';
 const tentacleRef = ref(null)
+const hasLoadCompleteRef = ref(false)
 const batchTween =  new BatchTween(function (currentData) {
   const tentacle = getMainTentacle()
   sendUnity(tentacle, currentData)
@@ -15,10 +16,18 @@ const batchTween =  new BatchTween(function (currentData) {
 //   const tentacle = getSmallTentacle()
 //   sendUnity(tentacle, currentData)
 // })
-const { ready: hasLoadCompleteRef, start: timeStart } = useTimeout(4000, { controls: true })
+const { start: timeStart } = useTimeoutFn(() => {
+  hasLoadCompleteRef.value = true
+}, 4000, { immediate: false })
 function handleLoadComplete (data) {
-  timeStart()
+  const mainTentacle = getMainTentacle()
+  if (data.status === mainTentacle.tentacleConstant.eventStatus.success) {
+    timeStart()
+  }
   console.log('handleLoadComplete', data)
+}
+function handleProgress (progress) {
+  console.log('progress', progress)
 }
 // const stopLoadComplete = watch(hasLoadCompleteRef, (value) => {
 //   if (value) {
@@ -37,13 +46,11 @@ function handleActive (currentData, nextData, dom) {
   const mainTentacle = getMainTentacle()
   const smallTentacle = getSmallTentacle()
   const result = mainTentacle && smallTentacle && hasLoadCompleteRef.value
+  console.log('result', result)
   if (result) {
     batchTween.start(currentData, nextData)
     // batchTweenSmall.start(currentData, nextData)
-    const tentacle = getSmallTentacle()
-    tentacle.sendUnity('ChangeRotation', valueToUnityRotation(nextData.rotation))
-    tentacle.sendUnity('ChangeScale', valueToUnityScale(nextData.scale))
-    tentacle.sendUnity('ChangeModelMaterial', unityToValueMaterial(nextData.material))
+    sendUnity(getSmallTentacle(), nextData)
     setSmallIframePosition(dom)
   }
   return result
@@ -52,21 +59,31 @@ function setSmallIframePosition (dom) {
   const iframe = getSmallTentacle().iframe
   setDomShow(iframe.parentElement, dom)
 }
-function getEventLoadComplete () {
+function getTentacleEvent (name = 'loadComplete') {
   const mainTentacle = getMainTentacle()
   if (mainTentacle) {
-    return mainTentacle.getMessageType(mainTentacle.tentacleConstant.event.loadComplete)
+    return mainTentacle.getMessageType(mainTentacle.tentacleConstant.event[name])
   }
 }
-function handleIframeLoad () {
-  destructionMainTentacle()
-  getMainTentacle()?.off?.(getEventLoadComplete(), handleLoadComplete)
-  cerateMainTentacle(tentacleRef.value)
-  getMainTentacle().on(getEventLoadComplete(), handleLoadComplete)
+function offPropress () {
+  getMainTentacle()?.off?.(getTentacleEvent('progress'), handleProgress)
 }
+function offLoadComplete () {
+  getMainTentacle()?.off?.(getTentacleEvent(), handleLoadComplete)
+}
+function handleIframeLoad () {
+  offPropress()
+  offLoadComplete()
+  destructionMainTentacle()
+  cerateMainTentacle(tentacleRef.value)
+  getMainTentacle().on(getTentacleEvent(), handleLoadComplete)
+  getMainTentacle().on(getTentacleEvent('progress'), offPropress)
+}
+// 创建小触手
 cerateSmallTentacle()
 onBeforeUnmount(() => {
-  getMainTentacle()?.off?.(getEventLoadComplete(), handleLoadComplete)
+  offPropress()
+  offLoadComplete()
   destructionMainTentacle()
   destructionSmallTentacle()
   batchTween.destruction()

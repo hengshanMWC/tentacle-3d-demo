@@ -8,10 +8,10 @@ export class TentacleIframe extends EventEmitter {
     window.addEventListener('message', this._onMessage)
   }
   get content () {
-    return this.iframe.contentWindow
+    return this.iframe?.contentWindow
   }
   get tentacleConstant () {
-    return this.content.tentacle
+    return this.content?.tentacle
   }
   get unity () {
     return this.content.unityInstance
@@ -27,6 +27,7 @@ export class TentacleIframe extends EventEmitter {
   }
   send (type, data, targetOrigin = '*') {
     const message = {
+      id: this.tentacleConstant.id,
       type: this.getMessageType(type),
       data
     }
@@ -34,9 +35,23 @@ export class TentacleIframe extends EventEmitter {
   }
   onMessage (data) {
     const detail = data.data
-    this.emit(detail.type, detail.data)
+    // if (detail?.id) {
+    //   console.log('onMessage', detail, this.tentacleConstant?.id, this.tentacleConstant?.prefix)
+    // }
+    if (
+      detail?.id &&
+      detail?.type &&
+      this.tentacleConstant?.prefix &&
+      detail.id === this.tentacleConstant?.id &&
+      detail.type.includes(this.tentacleConstant?.prefix)
+    ) {
+      this.emit(detail.type, detail.data)
+    }
   }
   destruction () {
     window.removeEventListener('message', this._onMessage)
+    if (this.unity) {
+      this.unity.Quit()
+    } 
   }
 }
