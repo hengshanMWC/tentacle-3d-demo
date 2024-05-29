@@ -5,7 +5,7 @@ import { tentacleObjectData} from './tentacle/data';
 import Tentacle from './Tentacle.vue'
 const tentacleRef = ref(null)
 const btnListRef = ref([])
-const { handleActive, currentIndexRef } = useReceivingInteractions(tentacleRef, btnListRef)
+const { handleActive, interactiveIndexRef } = useReceivingInteractions(tentacleRef, btnListRef)
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const { handleActive, currentIndexRef } = useReceivingInteractions(tentacleRef, 
       <template v-for="(item, index) in tentacleObjectData" :key="index">
         <div 
           class="btn" @mouseenter="handleActive(index)" ref="btnListRef">
-          <div :class="{active: index === currentIndexRef}">
+          <div :class="{active: index === interactiveIndexRef}">
             <span>name {{ index }}</span>
           </div>
         </div>

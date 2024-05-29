@@ -1,6 +1,7 @@
 import { computed, ref, watchEffect } from 'vue'
 import { defaultTentacleData, tentacleObjectData} from './data';
 export function useReceivingInteractions (tentacleRef, btnListRef) {
+  const interactiveIndexRef = ref()
   const currentIndexRef = ref()
   const indexStopRef = ref()
   const currentTentacle = computed(() => {
@@ -19,6 +20,7 @@ export function useReceivingInteractions (tentacleRef, btnListRef) {
     }
   }
   function tentacleWatchIndex (index) {
+    console.log('tentacleWatchIndex')
     if (isNaN(index)) return
     stopTentacleWatchIndex()
     indexStopRef.value = watchEffect(() => {
@@ -33,14 +35,15 @@ export function useReceivingInteractions (tentacleRef, btnListRef) {
     const currentData = currentTentacle.value
     const nextData = tentacleObjectData[index]
     const dom = btnListRef.value[index]
-    if (tentacleRef.value.handleActive(currentData, nextData, dom)) {
-      currentIndexRef.value = index
-    } else {
+    interactiveIndexRef.value = index
+    if (!tentacleRef.value.handleActive(currentData, nextData, dom)) {
       tentacleWatchIndex(index)
+    } else {
+      currentIndexRef.value = index
     }
   }
   return {
-    currentIndexRef,
+    interactiveIndexRef,
     handleActive
   }
 }
