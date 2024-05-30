@@ -1,3 +1,7 @@
 body {
   margin: 0;
 }
+
+.tentacle_iframe_parent {
+  /* z-index: 10; */
+}

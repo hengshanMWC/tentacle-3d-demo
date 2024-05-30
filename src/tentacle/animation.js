@@ -1,7 +1,7 @@
 import { gsap } from 'gsap'
 
 export function animationPosition () {
-  const data = {x:0,y:0,z:0}
+  const data = { x:0, y:0, z:0}
   const tl = gsap.to(data, {
     repeat: -1,
     paused: true,

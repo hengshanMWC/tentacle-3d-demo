@@ -33,7 +33,8 @@ export function getSmallTentacle () {
 export function destructionSmallTentacle () {
   if (smallTentacle) {
     smallTentacle.destruction()
-    smallTentacle.iframe.remove()
+    const parentElement = smallTentacle.iframe.parentElement
+    parentElement.parentElement.removeChild(parentElement)
     smallTentacle = null
   }
 }

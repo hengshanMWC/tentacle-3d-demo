@@ -18,7 +18,7 @@ export const defaultMainColor1 = {
   y: 0.15,
   z: 0.15
 }
-export const defaultFalmeColor = {x: 0.5, y: 1, z: 1}
+export const defaultFalmeColor = {x: 0.1, y: 0.25, z: 0.37}
 export const tentacleObjectData = [
   {
     rotation: {x: 20, y: 20, z: 20},
@@ -29,7 +29,7 @@ export const tentacleObjectData = [
       _MatcapColor1: {x: 0.2, y: 0.85, z: 1},
       _MatcapColor2: {x: 1, y: 0.4, z: 0.75},
       _MatcapColor3: {x: 0.55, y: 0, z: 0.44},
-      _FalmeColor: defaultFalmeColor,
+      _FalmeColor: {x: 0.5, y: 1, z: 1},
       _RimColor: {x: 0.7, y: 0.3, z: 0.8},
       _InsideColor: {x: 0.5, y: 0.5, z: 0.9},
     }
@@ -63,11 +63,7 @@ export const tentacleObjectData = [
           y: 0.1,
           z: 0.2
       },
-      _FalmeColor: {
-          x: 0.5,
-          y: 1,
-          z: 1
-      },
+      _FalmeColor: defaultFalmeColor,
       _RimColor: {
           x: 0.38,
           y: 0.8,
@@ -109,11 +105,7 @@ export const tentacleObjectData = [
           y: 0.6,
           z: 0.3
       },
-      _FalmeColor: {
-          x: 0.5,
-          y: 1,
-          z: 1
-      },
+      _FalmeColor: defaultFalmeColor,
       _RimColor: {
           x: 0.8,
           y: 0.8,
@@ -155,11 +147,7 @@ export const tentacleObjectData = [
           y: 0,
           z: 0
       },
-      _FalmeColor: {
-          x: 0.5,
-          y: 1,
-          z: 1
-      },
+      _FalmeColor: defaultFalmeColor,
       _RimColor: {
           x: 0.35,
           y: 0,
@@ -201,11 +189,7 @@ export const tentacleObjectData = [
           y: 0.1,
           z: 0
       },
-      _FalmeColor: {
-          x: 0.5,
-          y: 1,
-          z: 1
-      },
+      _FalmeColor: defaultFalmeColor,
       _RimColor: {
           x: 0,
           y: 2,
