@@ -7,17 +7,17 @@ export function createIframe() {
   iframe.src = import.meta.env.VITE_TENTACLE_PATH;
 
   // Set the style attributes
-  iframe.style.width = '200%';
-  iframe.style.height = '200%';
-  iframe.style.position = 'absolute';
-  iframe.style.left = 0
-  iframe.style.top = 0
+  iframe.style.width = '700%';
+  iframe.style.height = '700%';
   iframe.style.border = 'none';
-
-  parentElement.style.filter = 'blur(2px)';
+  iframe.style.filter = 'blur(5px)';
+  
   parentElement.style.position = 'absolute';
   parentElement.style.overflow = 'hidden'
   parentElement.style.opacity = 0
+  parentElement.style.display = 'flex'
+  parentElement.style['justify-content'] = 'center'
+  parentElement.style['align-items'] = 'center'
 
   parentElement.appendChild(iframe)
   document.body.appendChild(parentElement)

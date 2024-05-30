@@ -219,33 +219,6 @@ export const tentacleObjectData = [
   }
   },
 ]
-// export const tentacleData = [
-//   {
-//     ChangeRotation: '20,20,20',
-//     ChangeScale: valueToUnityScale(0.8),
-//     ChangeModelMaterial: '0.15,0.15,0.15|0.37,0.37,0.37|0.2,0.85,1|1,0.4,0.75|0.55,0,0.44|0.5,1,1|0.7,0.3,0.8|0.5,0.5,0.9'
-//   },
-//   {
-//     ChangeRotation: '10,90,20',
-//     ChangeScale: valueToUnityScale(1),
-//     ChangeModelMaterial: '0.15,0.15,0.15|0.12,0.12,0.12|0.2,1,0.95|1,0.35,0|0,0.1,0.2|0.5,1,1|0.38,0.8,0.3|0.5,0.85,0.9'
-//   },
-//   {
-//     ChangeRotation: '70,10,90',
-//     ChangeScale: valueToUnityScale(0.9),
-//     ChangeModelMaterial: '0.15,0.15,0.15|0.22,0.22,0.22|1,0.6,0.98|1,0.1,0|1,0.6,0.3|0.5,1,1|0.8,0.8,0.3|0.9,0.8,0.5'
-//   },
-//   {
-//     ChangeRotation: '20,-10,20',
-//     ChangeScale: valueToUnityScale(1.05),
-//     ChangeModelMaterial: '0.15,0.15,0.15|0.1,0.1,0.1|0.6,0,0.1|1,0,0.8|0.5,0,0|0.5,1,1|0.35,0,0|1,0,0.02'
-//   },
-//   {
-//     ChangeRotation: '10,0,-5',
-//     ChangeScale: valueToUnityScale(1.25),
-//     ChangeModelMaterial: '0.15,0.15,0.15|0.26,0.26,0.26|0.04,0.3,0|1,0,0.66|0.3,0.1,0|0.5,1,1|0.0,2,0|0,0.12,0.05'
-//   },
-// ]
 
 
 export function valueToUnityScale (value) {

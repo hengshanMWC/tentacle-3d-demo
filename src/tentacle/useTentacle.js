@@ -1,12 +1,15 @@
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
 import { useTimeoutFn } from '@vueuse/core'
 import { cerateMainTentacle, getMainTentacle, destructionMainTentacle, cerateSmallTentacle, destructionSmallTentacle, getSmallTentacle } from './index'
 import { unityToValueMaterial, valueToUnityRotation, valueToUnityScale} from './data';
 import { setDomShow } from './small.js'
 import { BatchTween } from './motion'
+import { animationPosition } from './animation'
 
 export function useTentacle (tentacleRef) {
   const hasLoadCompleteRef = ref(false)
+  let requestAnimationFrameId 
+  const {data: positionData, tl: positionDataTl} = animationPosition()
   const batchTween =  new BatchTween(function (currentData) {
     const tentacle = getMainTentacle()
     sendUnity(tentacle, currentData)
@@ -19,6 +22,44 @@ export function useTentacle (tentacleRef) {
   const { start: timeStart } = useTimeoutFn(() => {
     hasLoadCompleteRef.value = true
   }, 4000, { immediate: false })
+  watch(hasLoadCompleteRef, (load) => {
+    stopTentacle()
+    if (load) {
+      initTentacle()
+      updateTentacle()
+      positionDataTl?.play()
+    }
+  })
+  function initTentacle () {
+    const data = [
+      {
+        fnName: 'ChangeCenterRotateSpeed',
+        value: '0.5'
+      }
+    ]
+    setAllTentacle(data)
+  } 
+  function updateTentaclePosition () {
+    const mainTentacle = getMainTentacle()
+    // window.mainTentacle = mainTentacle
+    mainTentacle.sendUnity('ChangePos', valueToUnityRotation(positionData))
+    // console.log('data', data)
+  }
+  function updateTentacle () {
+    updateTentaclePosition()
+    requestAnimationFrameId = requestAnimationFrame(updateTentacle)
+  }
+  function stopTentacle () {
+    cancelAnimationFrame(requestAnimationFrameId)
+  }
+  function setAllTentacle (data) {
+    const mainTentacle = getMainTentacle()
+    const smallTentacle = getSmallTentacle()
+    data.forEach(item => {
+      mainTentacle.sendUnity(item.fnName, item.value)
+      smallTentacle.sendUnity(item.fnName, item.value)
+    })
+  }
   function handleLoadComplete (data) {
     const mainTentacle = getMainTentacle()
     if (data.status === mainTentacle.tentacleConstant.eventStatus.success) {
@@ -82,11 +123,13 @@ export function useTentacle (tentacleRef) {
   // 创建小触手
   cerateSmallTentacle()
   onBeforeUnmount(() => {
+    positionDataTl?.kill()
     offPropress()
     offLoadComplete()
+    batchTween.destruction()
+    stopTentacle()
     destructionMainTentacle()
     destructionSmallTentacle()
-    batchTween.destruction()
   })
   return {
     hasLoadCompleteRef,
